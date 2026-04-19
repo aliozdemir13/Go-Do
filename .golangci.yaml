@@ -1,0 +1,22 @@
+version: '2'
+
+run:
+  go: '1.25'
+  timeout: 5m
+
+linters:
+  default: none
+  enable:
+    - errcheck
+    - govet
+    - staticcheck
+    - unused
+    - ineffassign
+    - misspell
+    - revive
+  exclusions:
+    rules:
+      - path: _test\.go
+        linters:
+          - revive
+          - errcheck

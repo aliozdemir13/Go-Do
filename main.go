@@ -1,3 +1,4 @@
+// Package main is the command center of the app
 package main
 
 import (
@@ -92,7 +93,7 @@ func main() {
 			if err != nil {
 				fmt.Println("Error:", err)
 			}
-			errComplete := myList.Complete(todo.TaskId(id))
+			errComplete := myList.Complete(todo.TaskID(id))
 			if errComplete != nil {
 				fmt.Println("Error:", errComplete)
 			} else {
@@ -107,7 +108,7 @@ func main() {
 			if err != nil {
 				fmt.Println("Error:", err)
 			}
-			errDelete := myList.Delete(todo.TaskId(id))
+			errDelete := myList.Delete(todo.TaskID(id))
 			if errDelete != nil {
 				fmt.Println("Error:", errDelete)
 			} else {
@@ -122,7 +123,10 @@ func main() {
 			printProgress(&myList)
 			myList.Display(true) // complete tasks display
 		case "6":
-			myList.SaveToFile(filename)
+			err = myList.SaveToFile(filename)
+			if err != nil {
+				fmt.Println(todo.Red("\n Saved! \n"))
+			}
 			fmt.Println(todo.Indigo("\n Saved! \n"))
 			fmt.Println(todo.StyledBar("OPEN TASKS "))
 			printProgress(&myList)
