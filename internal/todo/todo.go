@@ -7,12 +7,12 @@ import (
 	"time"
 )
 
-// TaskId tracks the index of the last task id
-type TaskId int
+// TaskID tracks the index of the last task id
+type TaskID int
 
 // Task struct is responsible for details of the todo items
 type Task struct {
-	ID        TaskId    `json:"id"`
+	ID        TaskID    `json:"id"`
 	Title     string    `json:"title"`
 	IsDone    bool      `json:"is_done"`
 	CreatedAt time.Time `json:"createdAt"`
@@ -28,7 +28,7 @@ type TodoList struct { // nolint:revive
 func (l *TodoList) Add(title string) {
 	l.LastID++
 	newTask := Task{
-		ID:        TaskId(l.LastID),
+		ID:        TaskID(l.LastID),
 		Title:     title,
 		IsDone:    false,
 		CreatedAt: time.Now(),
@@ -64,7 +64,7 @@ func (l *TodoList) Display(isDone bool) {
 }
 
 // Complete function mark task as complete
-func (l *TodoList) Complete(id TaskId) error {
+func (l *TodoList) Complete(id TaskID) error {
 	for i := range l.Tasks {
 		if l.Tasks[i].ID == id {
 			l.Tasks[i].IsDone = true
@@ -76,7 +76,7 @@ func (l *TodoList) Complete(id TaskId) error {
 }
 
 // Delete removes the task from the list
-func (l *TodoList) Delete(id TaskId) error {
+func (l *TodoList) Delete(id TaskID) error {
 	for i := range l.Tasks {
 		if l.Tasks[i].ID == id {
 			l.Tasks = append(l.Tasks[:i], l.Tasks[i+1:]...)
