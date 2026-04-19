@@ -5,14 +5,21 @@ import "fmt"
 
 const (
 	// ColorIndigo used in styling
-	ColorIndigo    = "\033[38;5;99m"
-	BgIndigo       = "\033[48;5;99m"
-	ColorRed       = "\033[31m"
+	ColorIndigo = "\033[38;5;99m"
+	// BgIndigo used in styling
+	BgIndigo = "\033[48;5;99m"
+	// ColorRed used in styling
+	ColorRed = "\033[31m"
+	// ColorWhiteBold used in styling
 	ColorWhiteBold = "\033[1;37m"
-	ColorReset     = "\033[0m"
-	ColorDim       = "\033[38;5;245m"
-	BgIndigoLight  = "\033[48;5;105m" // A slightly lighter indigo for the accent
-	TextIndigo     = "\033[38;5;141m" // A bright "glowing" indigo
+	// ColorReset used in styling
+	ColorReset = "\033[0m"
+	// ColorDim used in styling
+	ColorDim = "\033[38;5;245m"
+	// BgIndigoLight used in styling
+	BgIndigoLight = "\033[48;5;105m" // A slightly lighter indigo for the accent
+	// TextIndigo used in styling
+	TextIndigo = "\033[38;5;141m" // A bright "glowing" indigo
 )
 
 // Dim styles the text. Use this like internal.Dim("text")

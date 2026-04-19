@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// TaskId tracks the index of the last task id
 type TaskId int
 
 // Task struct is responsible for details of the todo items
@@ -18,7 +19,7 @@ type Task struct {
 }
 
 // TodoList Struct (Our "Manager")
-type TodoList struct {
+type TodoList struct { // nolint:revive
 	Tasks  []Task `json:"tasks"`
 	LastID int    `json:"last_id"`
 }
