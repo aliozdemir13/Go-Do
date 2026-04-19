@@ -1,10 +1,13 @@
+// Package todo provides functionality for the app
 package todo
 
 import "fmt"
 
 const (
+	// ColorIndigo used in styling
 	ColorIndigo    = "\033[38;5;99m"
 	BgIndigo       = "\033[48;5;99m"
+	ColorRed       = "\033[31m"
 	ColorWhiteBold = "\033[1;37m"
 	ColorReset     = "\033[0m"
 	ColorDim       = "\033[38;5;245m"
@@ -12,20 +15,27 @@ const (
 	TextIndigo     = "\033[38;5;141m" // A bright "glowing" indigo
 )
 
-// Function: Use this like internal.Dim("text")
+// Dim styles the text. Use this like internal.Dim("text")
 func Dim(text string) string {
 	return ColorDim + text + ColorReset
 }
 
-// Function: Use this like internal.Indigo("text")
+// Indigo styles the text with indigo color. Use this like internal.Indigo("text")
 func Indigo(text string) string {
 	return ColorIndigo + text + ColorReset
 }
 
+// Red styles the text with red color. Use this like internal.Indigo("text")
+func Red(text string) string {
+	return ColorRed + text + ColorReset
+}
+
+// StyledBar styles the text with indigo background color. Use this like internal.StyledBar("text")
 func StyledBar(text string) string {
 	return fmt.Sprintf("%s %s %s%s", BgIndigo, ColorWhiteBold+text, ColorReset, "\n")
 }
 
+// FancyBar returns a formatted bar
 func FancyBar(title string, version string) string {
 	iconPart := BgIndigo + ColorWhiteBold + " ⚡ " + ColorReset
 	titlePart := BgIndigoLight + ColorWhiteBold + " " + title + " " + ColorReset
@@ -52,6 +62,7 @@ func StatsBar(total, completed int) string {
 		Dim("— Progress:"), percentage)
 }
 
+// MegaLogo shows the logo of the app
 func MegaLogo() string {
 	return ColorIndigo + `
  ██████╗  ██████╗       ██████╗  ██████╗ 

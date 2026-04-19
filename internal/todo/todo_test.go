@@ -12,8 +12,8 @@ func TestTodoList_Add(t *testing.T) {
 	if len(l.Tasks) != 2 {
 		t.Errorf("Expected 2 tasks, got %d", len(l.Tasks))
 	}
-	if l.LastId != 2 {
-		t.Errorf("Expected LastId to be 2, got %d", l.LastId)
+	if l.LastID != 2 {
+		t.Errorf("Expected LastId to be 2, got %d", l.LastID)
 	}
 	if l.Tasks[0].Title != "Test Task 1" {
 		t.Errorf("Expected first task title to be 'Test Task 1', got %s", l.Tasks[0].Title)
@@ -23,7 +23,7 @@ func TestTodoList_Add(t *testing.T) {
 func TestTodoList_Complete(t *testing.T) {
 	l := &TodoList{}
 	l.Add("Task to complete")
-	id := TaskId(l.LastId)
+	id := TaskId(l.LastID)
 
 	// Success case
 	err := l.Complete(id)

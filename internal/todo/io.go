@@ -1,3 +1,4 @@
+// Package todo provides functionality for the app
 package todo
 
 import (
@@ -6,6 +7,7 @@ import (
 	"os"
 )
 
+// SaveToFile saves the tasks to a file
 func (l *TodoList) SaveToFile(filename string) error {
 	// Convert the struct into a JSON byte slice
 	// MarshalIndent makes the file "pretty"
@@ -19,6 +21,7 @@ func (l *TodoList) SaveToFile(filename string) error {
 	return os.WriteFile(filename, data, 0644)
 }
 
+// LoadFromFile fetches the tasks from file
 func (l *TodoList) LoadFromFile(filename string) error {
 	// Read the file
 	data, err := os.ReadFile(filename)

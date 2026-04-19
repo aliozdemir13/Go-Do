@@ -122,7 +122,10 @@ func main() {
 			printProgress(&myList)
 			myList.Display(true) // complete tasks display
 		case "6":
-			myList.SaveToFile(filename)
+			err = myList.SaveToFile(filename)
+			if err != nil {
+				fmt.Println(todo.Red("\n Saved! \n"))
+			}
 			fmt.Println(todo.Indigo("\n Saved! \n"))
 			fmt.Println(todo.StyledBar("OPEN TASKS "))
 			printProgress(&myList)
