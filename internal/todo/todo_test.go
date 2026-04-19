@@ -23,7 +23,7 @@ func TestTodoList_Add(t *testing.T) {
 func TestTodoList_Complete(t *testing.T) {
 	l := &TodoList{}
 	l.Add("Task to complete")
-	id := TaskId(l.LastID)
+	id := TaskID(l.LastID)
 
 	// Success case
 	err := l.Complete(id)

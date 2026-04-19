@@ -93,7 +93,7 @@ func main() {
 			if err != nil {
 				fmt.Println("Error:", err)
 			}
-			errComplete := myList.Complete(todo.TaskId(id))
+			errComplete := myList.Complete(todo.TaskID(id))
 			if errComplete != nil {
 				fmt.Println("Error:", errComplete)
 			} else {
@@ -108,7 +108,7 @@ func main() {
 			if err != nil {
 				fmt.Println("Error:", err)
 			}
-			errDelete := myList.Delete(todo.TaskId(id))
+			errDelete := myList.Delete(todo.TaskID(id))
 			if errDelete != nil {
 				fmt.Println("Error:", errDelete)
 			} else {
