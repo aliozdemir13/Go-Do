@@ -2,7 +2,7 @@
 
 [![Go Version](https://img.shields.io/github/go-mod/go-version/aliozdemir13/Go-Do)](https://go.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Go CI](https://github.com/aliozdemir13/Lumina-CLI/actions/workflows/ci.yaml/badge.svg)](https://github.com/aliozdemir13/Lumina-CLI/actions)
+[![Go CI](https://github.com/aliozdemir13/Lumina-CLI/actions/workflows/ci.yaml/badge.svg)](https://github.com/aliozdemir13/Go-Do/actions)
 
 **Go-Do** is a polished Command Line Interface (CLI) productivity tool built entirely in **Go (Golang)**. This project serves as a practical deep-dive into building modern terminal applications with **JSON persistence**, local storage, and high-contrast ANSI styling.
 
