@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"Go-Do/internal/todo"
+
 	"github.com/spf13/cobra"
 )
 
@@ -17,10 +18,10 @@ var rootCmd = &cobra.Command{
 	Use:   "go-do",
 	Short: "A terminal-based task manager",
 	Long:  `Go-Do is a CLI task manager that helps you manage your todos from the terminal.`,
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+	PersistentPreRunE: func(_ *cobra.Command, _ []string) error {
 		return myList.LoadFromFile(filename)
 	},
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, _ []string) error {
 		printHeader()
 		printProgress(&myList)
 		fmt.Println(todo.StyledBar("OPEN TASKS "))

@@ -16,7 +16,7 @@ var (
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "Show tasks (open by default)",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, _ []string) error {
 		printHeader()
 		printProgress(&myList)
 		if showDone {
