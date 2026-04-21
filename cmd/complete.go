@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"Go-Do/internal/todo"
+
 	"github.com/spf13/cobra"
 )
 
@@ -12,7 +13,7 @@ var completeCmd = &cobra.Command{
 	Use:   "complete <id>",
 	Short: "Mark a task as complete",
 	Args:  cobra.ExactArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		id, err := strconv.Atoi(args[0])
 		if err != nil {
 			return fmt.Errorf("invalid task ID: %s", args[0])

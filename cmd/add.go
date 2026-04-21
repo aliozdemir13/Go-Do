@@ -13,7 +13,7 @@ var addCmd = &cobra.Command{
 	Use:   "add <title>",
 	Short: "Add a new task",
 	Args:  cobra.MinimumNArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		title := strings.Join(args, " ")
 		myList.Add(title)
 		if err := myList.SaveToFile(filename); err != nil {
