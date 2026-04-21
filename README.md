@@ -38,34 +38,74 @@ I implemented `bufio.Scanner` for handling multi-word task titles and `strconv.A
 ### Prerequisites
 - [Go 1.20+](https://go.dev/dl/)
 
-### Setup
+### Setup for Windows
 1. Clone the repository:
    ```bash
    git clone https://github.com/aliozdemir13/Go-Do.git
    cd Go-Do
-
-   Run the application directly:
-   code Bash
-
-   go run main.go
    ```
+2. Build the app:
+   ```bash 
+   go build
+   ```
+3. Run the app
+    ```bash
+   ./Go-Do
+   ```
+4. List of commands
+    ```bash
+    ./Go-Do --help
+    ```
 
-Menu Commands
+### Setup for Linux/MacOS
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/aliozdemir13/Go-Do.git
+   cd Go-Do
+   ```
+2. Build the app:
+   ```bash 
+   make build
+   ```
+3. Run the app
+    ```bash
+   ./go-do
+   ```
+4. List of commands
+    ```bash
+    ./go-do --help
+    ```
+
+### Menu Commands
 ```bash
-    1: Add a new task (supports multi-word titles)
-    2: Mark a task as completed by Id.
-    3: Delete a task by Id.
-    4/5: View open or completed tasks.
-    6: Save changes to tasks.json.
-    exit: Securely close the application.
+    Usage:
+    go-do [flags]
+    go-do [command]
+    go-do [command] [flags]
+
+    Available Commands:
+    add               Add a new task
+    complete          Mark a task as complete
+    delete            Delete a task
+    help              Help about any command
+    list              Show tasks (open by default)
+    list --done       Show closed tasks
 ```
 
-📂 Project Structure
+### Project Structure
 ```bash
-
 .
-├── main.go            # Application entry point and CLI loop (intentionally not used cobra yet, and left it on loop)
-├── tasks.json         # Local data storage (Auto-generated)
+├── main.go # Application entry point
+├── main_test.go
+├── tasks.json   
+├── Makefile   
+└── cmd
+    └── add.go
+    └── complete.go
+    └── delete.go
+    └── list.go
+    └── root_test.go
+    └── root.go # Command line entry point
 └── internal/
     └── todo/
         ├── todo.go    # Core logic and Task/TodoList structs
@@ -73,7 +113,7 @@ Menu Commands
         └── ui.go      # ANSI styling and progress bar logic
 ```
 
-License
+### License
 
 Distributed under the MIT License. See LICENSE for more information.
 
