@@ -1,6 +1,7 @@
 package todo
 
 import (
+	"io"
 	"testing"
 )
 
@@ -88,20 +89,20 @@ func TestTodoList_Display(t *testing.T) {
 
 	t.Run("Empty List", func(t *testing.T) {
 		l := &TodoList{}
-		l.Display(false) // Should hit "No tasks yet!"
+		l.Display(io.Discard, false) // Should hit "No tasks yet!"
 	})
 
 	t.Run("No Completed Tasks Message", func(t *testing.T) {
 		l := &TodoList{}
 		l.Add("Pending")
-		l.Display(true) // isDone=true, but counter=0. Hits "Nothing to see here!"
+		l.Display(io.Discard, true) // isDone=true, but counter=0. Hits "Nothing to see here!"
 	})
 
 	t.Run("No Pending Tasks Message", func(t *testing.T) {
 		l := &TodoList{}
 		l.Add("Done")
 		l.Complete(1)
-		l.Display(false) // isDone=false, but counter=0. Hits "No tasks yet!"
+		l.Display(io.Discard, false) // isDone=false, but counter=0. Hits "No tasks yet!"
 	})
 
 	t.Run("Full Display", func(t *testing.T) {
@@ -110,7 +111,7 @@ func TestTodoList_Display(t *testing.T) {
 		l.Add("Task B")
 		l.Complete(1)
 
-		l.Display(true)  // Displays Task A
-		l.Display(false) // Displays Task B
+		l.Display(io.Discard, true)  // Displays Task A
+		l.Display(io.Discard, false) // Displays Task B
 	})
 }

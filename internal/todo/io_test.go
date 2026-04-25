@@ -2,19 +2,12 @@ package todo
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 )
 
-// Assuming a structure like this based on your methods
-type Item struct {
-	Task string `json:"task"`
-	Done bool   `json:"done"`
-}
-
 func TestTodoList_SaveAndLoad(t *testing.T) {
-	tmpFile := "test_todo.json"
-	// Cleanup after test
-	defer os.Remove(tmpFile)
+	tmpFile := filepath.Join(t.TempDir(), "test_todo.json")
 
 	list := &TodoList{
 		Tasks: []Task{
@@ -56,12 +49,11 @@ func TestLoadFromFile_NotFound(t *testing.T) {
 }
 
 func TestLoadFromFile_InvalidJSON(t *testing.T) {
-	tmpFile := "invalid.json"
+	tmpFile := filepath.Join(t.TempDir(), "invalid.json")
 	err := os.WriteFile(tmpFile, []byte("{ invalid json "), 0644)
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.Remove(tmpFile)
 
 	list := &TodoList{}
 	err = list.LoadFromFile(tmpFile)
@@ -73,14 +65,13 @@ func TestLoadFromFile_InvalidJSON(t *testing.T) {
 func TestSaveToFile_PermissionError(t *testing.T) {
 	// Attempting to save to a path that is a directory instead of a file
 	// will trigger an os.WriteFile error on most systems.
-	err := os.Mkdir("testdir", 0755)
-	if err != nil {
+	dir := filepath.Join(t.TempDir(), "testdir")
+	if err := os.Mkdir(dir, 0755); err != nil {
 		t.Fatal(err)
 	}
-	defer os.RemoveAll("testdir")
 
 	list := &TodoList{}
-	err = list.SaveToFile("testdir") // "testdir" is a folder, writing fails
+	err := list.SaveToFile(dir) // dir is a folder, writing fails
 	if err == nil {
 		t.Error("Expected error when saving to a directory path, but got nil")
 	}

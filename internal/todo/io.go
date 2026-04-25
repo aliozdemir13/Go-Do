@@ -25,9 +25,12 @@ func (l *TodoList) SaveToFile(filename string) error {
 func (l *TodoList) LoadFromFile(filename string) error {
 	// Read the file
 	data, err := os.ReadFile(filename)
-	if os.IsNotExist(err) {
-		fmt.Printf("Starting fresh!")
-		return nil
+	if err != nil {
+		if os.IsNotExist(err) {
+			fmt.Println("Starting fresh!")
+			return nil
+		}
+		return err
 	}
 
 	return json.Unmarshal(data, l)

@@ -1,6 +1,7 @@
 package todo
 
 import (
+	"bytes"
 	"strings"
 	"testing"
 )
@@ -17,6 +18,12 @@ func TestColorWrappers(t *testing.T) {
 	gotIndigo := Indigo(input)
 	if !strings.Contains(gotIndigo, ColorIndigo) || !strings.Contains(gotIndigo, ColorReset) {
 		t.Error("Indigo() should wrap text in Indigo and Reset colors")
+	}
+
+	// Test Red
+	gotRed := Red(input)
+	if !strings.Contains(gotRed, ColorRed) || !strings.Contains(gotRed, ColorReset) {
+		t.Error("Red() should wrap text in Red and Reset colors")
 	}
 }
 
@@ -73,12 +80,99 @@ func TestStatsBar(t *testing.T) {
 	}
 }
 
-func TestMegaLogo(t *testing.T) {
-	got := MegaLogo()
-	if !strings.Contains(got, "██") {
-		t.Error("MegaLogo() should contain ASCII art blocks")
+func TestPrintHeader(t *testing.T) {
+	buf := new(bytes.Buffer)
+	PrintHeader(buf)
+	got := buf.String()
+
+	tests := []string{
+		"TASKS",
+		"v1.0.0",
+		"Local Storage Active",
+		"━━━━━━",
 	}
-	if !strings.Contains(got, ColorIndigo) {
-		t.Error("MegaLogo() should be colored indigo")
+
+	for _, want := range tests {
+		if !strings.Contains(got, want) {
+			t.Errorf("PrintHeader() output missing expected string: %q", want)
+		}
+	}
+
+	if buf.Len() == 0 {
+		t.Error("PrintHeader() produced no output")
+	}
+}
+
+func TestPrintProgress(t *testing.T) {
+	tests := []struct {
+		name          string
+		total         int
+		done          int
+		wantDoneIcons int // How many ■ we expect
+		wantTodoIcons int // How many □ we expect
+		list          *TodoList
+	}{
+		{
+			name:          "Zero tasks (Empty State)",
+			total:         0,
+			done:          0,
+			wantDoneIcons: 0,
+			wantTodoIcons: 20,
+			list: &TodoList{
+				Tasks: []Task{
+					{Title: "Learn Go", IsDone: false},
+					{Title: "Write Tests", IsDone: false},
+				},
+			},
+		},
+		{
+			name:          "Half completed",
+			total:         10,
+			done:          5,
+			wantDoneIcons: 10, // (5 * 20 / 10) = 10
+			wantTodoIcons: 10,
+			list: &TodoList{
+				Tasks: []Task{
+					{Title: "Learn Go", IsDone: false},
+					{Title: "Write Tests", IsDone: true},
+				},
+			},
+		},
+		{
+			name:          "Fully completed",
+			total:         10,
+			done:          10,
+			wantDoneIcons: 20, // (10 * 20 / 10) = 20
+			wantTodoIcons: 0,
+			list: &TodoList{
+				Tasks: []Task{
+					{Title: "Learn Go", IsDone: true},
+					{Title: "Write Tests", IsDone: true},
+				},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			buf := new(bytes.Buffer)
+
+			PrintProgress(buf, tt.list)
+			got := buf.String()
+
+			if !strings.Contains(got, "Progress:") {
+				t.Errorf("Missing label 'Progress:'")
+			}
+
+			doneCount := strings.Count(got, "■")
+			todoCount := strings.Count(got, "□")
+
+			if doneCount != tt.wantDoneIcons {
+				t.Errorf("Progress bar math wrong: got %d '■', want %d", doneCount, tt.wantDoneIcons)
+			}
+			if todoCount != tt.wantTodoIcons {
+				t.Errorf("Progress bar math wrong: got %d '□', want %d", todoCount, tt.wantTodoIcons)
+			}
+		})
 	}
 }

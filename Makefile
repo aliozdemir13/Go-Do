@@ -1,5 +1,4 @@
 BINARY  := go-do
-MODULE  := $(shell go list -m)
 COVER   := coverage.out
 
 .PHONY: all build run test lint coverage clean tidy
@@ -16,11 +15,11 @@ run:
 
 ## test: run unit tests
 test:
-	go test -v .
+	go test -v ./...
 
 ## coverage: run tests and show coverage report (fails below 90%)
 coverage:
-	go test -coverprofile=$(COVER) .
+	go test -coverprofile=$(COVER) ./...
 	go tool cover -func=$(COVER)
 	@THRESHOLD=90; \
 	COVERAGE=$$(go tool cover -func=$(COVER) | grep total | awk '{print $$3}' | sed 's/%//'); \

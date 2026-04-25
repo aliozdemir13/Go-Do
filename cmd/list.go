@@ -8,23 +8,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	showDone bool
-	showOpen bool
-)
+var showDone bool
 
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "Show tasks (open by default)",
-	RunE: func(_ *cobra.Command, _ []string) error {
-		printHeader()
-		printProgress(&myList)
+	RunE: func(cmd *cobra.Command, _ []string) error {
+		todo.PrintHeader(cmd.OutOrStdout())
+		todo.PrintProgress(cmd.OutOrStdout(), &myList)
 		if showDone {
-			fmt.Println(todo.StyledBar("COMPLETED TASKS "))
-			myList.Display(true)
+			fmt.Fprintln(cmd.OutOrStdout(), todo.StyledBar("COMPLETED TASKS "))
+			myList.Display(cmd.OutOrStdout(), true)
 		} else {
-			fmt.Println(todo.StyledBar("OPEN TASKS "))
-			myList.Display(false)
+			fmt.Fprintln(cmd.OutOrStdout(), todo.StyledBar("OPEN TASKS "))
+			myList.Display(cmd.OutOrStdout(), false)
 		}
 		return nil
 	},
@@ -32,6 +29,4 @@ var listCmd = &cobra.Command{
 
 func init() {
 	listCmd.Flags().BoolVar(&showDone, "done", false, "Show completed tasks")
-	listCmd.Flags().BoolVar(&showOpen, "open", false, "Show open tasks")
-	listCmd.MarkFlagsMutuallyExclusive("done", "open")
 }

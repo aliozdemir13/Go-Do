@@ -1,8 +1,14 @@
 // Package main is the command center of the app
 package main
 
-import "Go-Do/cmd"
+import (
+	"os"
+
+	"Go-Do/cmd"
+)
 
 func main() {
-	cmd.Execute()
+	if err := cmd.Execute(); err != nil {
+		os.Exit(1)
+	}
 }

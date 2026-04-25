@@ -4,6 +4,7 @@ package todo
 import (
 	"errors"
 	"fmt"
+	"io"
 	"time"
 )
 
@@ -40,7 +41,7 @@ func (l *TodoList) Add(title string) {
 /* Once a struct becomes a "Manager" (like TodoList),
 we almost always use Pointer Receivers (*TodoList) for everything, even if it's just reading.
 It's more efficient and keeps the method set consistent. */
-func (l *TodoList) Display(isDone bool) {
+func (l *TodoList) Display(w io.Writer, isDone bool) {
 	counter := 0
 	for _, t := range l.Tasks {
 		status := " "
@@ -51,14 +52,14 @@ func (l *TodoList) Display(isDone bool) {
 			continue
 		}
 		counter++
-		fmt.Printf("[%s] ID: %d | %s (Added: %v)\n", status, t.ID, t.Title, t.CreatedAt.Format("15:04:05"))
+		fmt.Fprintf(w, "[%s] ID: %d | %s (Added: %v)\n", status, t.ID, t.Title, t.CreatedAt.Format("15:04:05"))
 
 	}
 	if len(l.Tasks) == 0 || (!isDone && counter == 0) {
-		fmt.Println("No tasks yet! Go grab a coffee.")
+		fmt.Fprintln(w, "No tasks yet! Go grab a coffee.")
 		return
 	} else if isDone && counter == 0 {
-		fmt.Println("Nothing to see here! Almost too clean, lets close some tasks to fix that ;)")
+		fmt.Fprintln(w, "Nothing to see here! Almost too clean, lets close some tasks to fix that ;)")
 		return
 	}
 }
