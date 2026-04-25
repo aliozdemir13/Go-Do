@@ -24,8 +24,8 @@ var completeCmd = &cobra.Command{
 		if err := myList.SaveToFile(filename); err != nil {
 			return err
 		}
-		fmt.Fprintln(cmd.OutOrStdout(), todo.Indigo("\n Task completed!"))
-		fmt.Fprintln(cmd.OutOrStdout(), todo.StyledBar("OPEN TASKS "))
+		_, _ = fmt.Fprintln(cmd.OutOrStdout(), todo.Indigo("\n Task completed!"))
+		_, _ = fmt.Fprintln(cmd.OutOrStdout(), todo.StyledBar("OPEN TASKS "))
 		myList.Display(cmd.OutOrStdout(), false)
 		return nil
 	},
