@@ -22,8 +22,14 @@ var rootCmd = &cobra.Command{
 		return myList.LoadFromFile(filename)
 	},
 	RunE: func(cmd *cobra.Command, _ []string) error {
-		todo.PrintHeader(cmd.OutOrStdout())
-		todo.PrintProgress(cmd.OutOrStdout(), &myList)
+		err := todo.PrintHeader(cmd.OutOrStdout())
+		if err != nil {
+			return err
+		}
+		e := todo.PrintProgress(cmd.OutOrStdout(), &myList)
+		if e != nil {
+			return e
+		}
 		fmt.Fprintln(cmd.OutOrStdout(), todo.StyledBar("OPEN TASKS "))
 		myList.Display(cmd.OutOrStdout(), false)
 		return nil

@@ -14,8 +14,14 @@ var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "Show tasks (open by default)",
 	RunE: func(cmd *cobra.Command, _ []string) error {
-		todo.PrintHeader(cmd.OutOrStdout())
-		todo.PrintProgress(cmd.OutOrStdout(), &myList)
+		err := todo.PrintHeader(cmd.OutOrStdout())
+		if err != nil {
+			return err
+		}
+		e := todo.PrintProgress(cmd.OutOrStdout(), &myList)
+		if e != nil {
+			return e
+		}
 		if showDone {
 			fmt.Fprintln(cmd.OutOrStdout(), todo.StyledBar("COMPLETED TASKS "))
 			myList.Display(cmd.OutOrStdout(), true)
