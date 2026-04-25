@@ -36,7 +36,7 @@ I implemented `bufio.Scanner` for handling multi-word task titles and `strconv.A
 ## Installation & Usage
 
 ### Prerequisites
-- [Go 1.20+](https://go.dev/dl/)
+- [Go 1.25+](https://go.dev/dl/)
 
 ### Setup for Windows
 1. Clone the repository:
@@ -95,22 +95,25 @@ I implemented `bufio.Scanner` for handling multi-word task titles and `strconv.A
 ### Project Structure
 ```bash
 .
-├── main.go # Application entry point
+├── main.go            # Application entry point
 ├── main_test.go
-├── tasks.json   
-├── Makefile   
-└── cmd
-    └── add.go
-    └── complete.go
-    └── delete.go
-    └── list.go
-    └── root_test.go
-    └── root.go # Command line entry point
+├── tasks.json         # Local data storage (auto-generated)
+├── Makefile
+├── cmd/
+│   ├── root.go        # Root cobra command + header/progress helpers
+│   ├── root_test.go
+│   ├── add.go
+│   ├── complete.go
+│   ├── delete.go
+│   └── list.go
 └── internal/
     └── todo/
-        ├── todo.go    # Core logic and Task/TodoList structs
-        ├── file_io.go # JSON read/write operations
-        └── ui.go      # ANSI styling and progress bar logic
+        ├── todo.go       # Core logic and Task/TodoList structs
+        ├── todo_test.go
+        ├── io.go         # JSON read/write operations
+        ├── io_test.go
+        ├── style.go      # ANSI styling and progress bar logic
+        └── style_test.go
 ```
 
 ### License

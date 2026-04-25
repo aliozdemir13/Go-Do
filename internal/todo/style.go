@@ -1,7 +1,11 @@
 // Package todo provides functionality for the app
 package todo
 
-import "fmt"
+import (
+	"fmt"
+	"io"
+	"strings"
+)
 
 const (
 	// ColorIndigo used in styling
@@ -70,7 +74,7 @@ func StatsBar(total, completed int) string {
 }
 
 // MegaLogo shows the logo of the app
-func MegaLogo() string {
+func megaLogo() string {
 	return ColorIndigo + `
  ██████╗  ██████╗       ██████╗  ██████╗ 
 ██╔════╝ ██╔═══██╗      ██╔══██╗██╔═══██╗
@@ -79,4 +83,42 @@ func MegaLogo() string {
 ╚██████╔╝╚██████╔╝      ██████╔╝╚██████╔╝
  ╚═════╝  ╚═════╝       ╚═════╝  ╚═════╝                        
                                                              ` + ColorReset + "\n"
+}
+
+// PrintHeader constructs and prints the app header
+func PrintHeader(w io.Writer) error {
+	// Building the UI in a string
+	out := megaLogo()
+	out += fmt.Sprintf("\n   %s %s %s\n",
+		Indigo("⚡ TASKS"),
+		Dim("v1.0.0"),
+		Indigo("●")+" "+Dim("Local Storage Active"))
+	out += ColorIndigo + "  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" + ColorReset + "\n"
+	out += "\n"
+
+	// Write it once
+	_, err := fmt.Fprint(w, out)
+	return err
+}
+
+// PrintProgress constructs and prints the progress bar
+func PrintProgress(w io.Writer, list *TodoList) error {
+	total, done := list.GetStats()
+	var b strings.Builder
+
+	fmt.Fprintf(&b, "\n   %s  \n", StyledBar("Progress:"))
+	fmt.Fprintln(&b, StatsBar(total, done))
+
+	b.WriteString("   " + Indigo("● "))
+	for i := 0; i < 20; i++ {
+		if total > 0 && i < (done*20/total) {
+			b.WriteString(Indigo("■"))
+		} else {
+			b.WriteString(Dim("□"))
+		}
+	}
+	b.WriteString("\n\n")
+
+	_, err := fmt.Fprint(w, b.String())
+	return err
 }

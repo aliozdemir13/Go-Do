@@ -34,7 +34,7 @@ jobs:
 
       - name: Run Tests
         run: |
-          go test -v -coverprofile=coverage.out ./internal/...
+          go test -v -coverprofile=coverage.out ./...
           go tool cover -func=coverage.out
 
       - name: Check Coverage Threshold
