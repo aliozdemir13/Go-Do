@@ -10,9 +10,9 @@ func TestMainFunction(t *testing.T) {
 	oldArgs := os.Args
 	defer func() { os.Args = oldArgs }()
 
-	// We set the command line arguments to "lumina --help"
+	// We set the command line arguments to "go-do --help"
 	// This ensures cmd.Execute() runs successfully and returns nil
-	os.Args = []string{"lumina", "--help"}
+	os.Args = []string{"go-do", "--help"}
 
 	// Calling main() will now:
 	// 1. Run internal.PrintHeader() -> (Covered!)
