@@ -1,0 +1,27 @@
+version: 2
+updates:
+  # 1. Update Go dependencies
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "weekly" # Check for updates every week (less noisy than daily)
+    groups:
+      go-dependencies:
+        patterns:
+          - "*" # Groups all Go updates into a single PR
+    labels:
+      - "dependencies"
+      - "go"
+
+  # 2. Update GitHub Actions (keeps your CI workflows secure/fast)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      actions-dependencies:
+        patterns:
+          - "*"
+    labels:
+      - "dependencies"
+      - "github-actions"
