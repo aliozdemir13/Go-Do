@@ -33,6 +33,9 @@ Since Go doesn't have a built-in `remove` method for slices, I implemented the i
 ### 4. Robust Input Handling
 I implemented `bufio.Scanner` for handling multi-word task titles and `strconv.Atoi` for type-safe integer conversion of user inputs.
 
+## Architectural Decisions
+- It is a conscious decision not to introduce a database at the current stage and use simple json file due to repo is dedicated for learning and personal use only. It can be introduced in the future for cloud-based multi device usage.
+
 ## Installation & Usage
 
 ### Prerequisites
