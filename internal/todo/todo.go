@@ -15,6 +15,7 @@ type TaskID int
 type Task struct {
 	ID        TaskID    `json:"id"`
 	Title     string    `json:"title"`
+	Tag       Tag       `json:"tag"`
 	IsDone    bool      `json:"is_done"`
 	CreatedAt time.Time `json:"createdAt"`
 }
@@ -25,16 +26,54 @@ type TodoList struct { // nolint:revive
 	LastID int    `json:"last_id"`
 }
 
+type TagList struct {
+	Tags []Tag `json:"tags"`
+}
+
+type Tag struct {
+	Name   string `json:"name"`
+	Colour string `json:"colour"`
+}
+
+type TagColor struct {
+	Name string
+	Code string
+}
+
+var TagColors = []TagColor{
+	{"red", "\033[38;5;203m"},
+	{"orange", "\033[38;5;208m"},
+	{"yellow", "\033[38;5;220m"},
+	{"green", "\033[38;5;118m"},
+	{"teal", "\033[38;5;43m"},
+	{"cyan", "\033[38;5;51m"},
+	{"blue", "\033[38;5;75m"},
+	{"indigo", "\033[38;5;141m"},
+	{"purple", "\033[38;5;135m"},
+	{"pink", "\033[38;5;205m"},
+	{"gray", "\033[38;5;245m"},
+}
+
 // Add Method to Add a Task (Pointer Receiver because of modifying the list)
-func (l *TodoList) Add(title string) {
+func (l *TodoList) Add(title string, tagName string, tagList *TagList) error {
 	l.LastID++
+
+	taskTag, err := tagList.GetTag(tagName)
+	if err != nil {
+		return err
+	}
+
 	newTask := Task{
 		ID:        TaskID(l.LastID),
 		Title:     title,
+		Tag:       taskTag,
 		IsDone:    false,
 		CreatedAt: time.Now(),
 	}
+
 	l.Tasks = append(l.Tasks, newTask)
+
+	return nil
 }
 
 // Display Method to List Tasks (Value Receiver because of only reading)
@@ -43,6 +82,8 @@ we almost always use Pointer Receivers (*TodoList) for everything, even if it's 
 It's more efficient and keeps the method set consistent. */
 func (l *TodoList) Display(w io.Writer, isDone bool) {
 	counter := 0
+	colour := ""
+
 	for _, t := range l.Tasks {
 		status := " "
 		if t.IsDone {
@@ -51,8 +92,12 @@ func (l *TodoList) Display(w io.Writer, isDone bool) {
 		if t.IsDone != isDone {
 			continue
 		}
+
+		if t.Tag.Colour != "" {
+			colour = t.Tag.Colour
+		}
 		counter++
-		_, _ = fmt.Fprintf(w, "[%s] ID: %d | %s (Added: %v)\n", status, t.ID, t.Title, t.CreatedAt.Format("15:04:05"))
+		_, _ = fmt.Fprintf(w, "%s [%s] ID: %d | %s (Added: %v) | [%s]\n", colour, status, t.ID, t.Title, t.CreatedAt.Format("15:04:05"), t.Tag.Name)
 
 	}
 	if len(l.Tasks) == 0 || (!isDone && counter == 0) {
@@ -98,4 +143,29 @@ func (l *TodoList) GetStats() (total int, completed int) {
 		}
 	}
 	return
+}
+
+// CreateTag Method to create tag for categorizing tasks for highlight in different color
+func (t *TagList) CreateTag(name, colourName string) {
+	colourCode := ""
+	for _, t := range TagColors {
+		if colourName == t.Name {
+			colourCode = t.Code
+		}
+	}
+	newTag := Tag{
+		Name:   name,
+		Colour: colourCode,
+	}
+	t.Tags = append(t.Tags, newTag)
+}
+
+func (t *TagList) GetTag(name string) (Tag, error) {
+	for _, tag := range t.Tags {
+		if tag.Name == name {
+			return tag, nil
+		}
+	}
+
+	return Tag{}, fmt.Errorf("tag %q not found", name)
 }

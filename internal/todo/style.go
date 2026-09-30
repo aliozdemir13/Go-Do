@@ -122,3 +122,35 @@ func PrintProgress(w io.Writer, list *TodoList) error {
 	_, err := fmt.Fprint(w, b.String())
 	return err
 }
+
+func StyleTextWithTagName(tagColor, text string) string {
+	for _, t := range TagColors {
+		if t.Name == tagColor {
+			return t.Code + text + ColorReset
+		}
+	}
+
+	return text
+}
+
+// PrintProgress constructs and prints the progress bar
+func PrintTags(w io.Writer, list *TagList) error {
+	var b strings.Builder
+
+	fmt.Fprintf(&b, "\n   %s  \n", StyledBar("Tags:"))
+
+	for _, t := range list.Tags {
+		fmt.Fprintf(
+			&b,
+			"   %s%s%s",
+			t.Colour,
+			t.Name,
+			ColorReset,
+		)
+	}
+
+	b.WriteString("\n\n")
+
+	_, err := fmt.Fprint(w, b.String())
+	return err
+}

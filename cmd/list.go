@@ -22,6 +22,12 @@ var listCmd = &cobra.Command{
 		if e != nil {
 			return e
 		}
+
+		myTags.LoadFromFile(filenameTags)
+		if err := todo.PrintTags(cmd.OutOrStdout(), &myTags); err != nil {
+			return err
+		}
+
 		if showDone {
 			_, _ = fmt.Fprintln(cmd.OutOrStdout(), todo.StyledBar("COMPLETED TASKS "))
 			myList.Display(cmd.OutOrStdout(), true)
