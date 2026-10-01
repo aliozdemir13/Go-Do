@@ -123,6 +123,7 @@ func PrintProgress(w io.Writer, list *TodoList) error {
 	return err
 }
 
+// StyleTextWithTagName dynamic method for styling lines per tag color
 func StyleTextWithTagName(tagColor, text string) string {
 	for _, t := range TagColors {
 		if t.Name == tagColor {
@@ -133,7 +134,7 @@ func StyleTextWithTagName(tagColor, text string) string {
 	return text
 }
 
-// PrintProgress constructs and prints the progress bar
+// PrintTags constructs and prints the list of created tags
 func PrintTags(w io.Writer, list *TagList) error {
 	var b strings.Builder
 

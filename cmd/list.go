@@ -23,7 +23,11 @@ var listCmd = &cobra.Command{
 			return e
 		}
 
-		myTags.LoadFromFile(filenameTags)
+		eLoad := myTags.LoadFromFile(filenameTags)
+		if eLoad != nil {
+			return eLoad
+		}
+
 		if err := todo.PrintTags(cmd.OutOrStdout(), &myTags); err != nil {
 			return err
 		}

@@ -26,20 +26,24 @@ type TodoList struct { // nolint:revive
 	LastID int    `json:"last_id"`
 }
 
+// TagList struct represents tags
 type TagList struct {
 	Tags []Tag `json:"tags"`
 }
 
+// Tag is the individual tag struct
 type Tag struct {
 	Name   string `json:"name"`
 	Colour string `json:"colour"`
 }
 
+// TagColor stores details about tags to save properly
 type TagColor struct {
 	Name string
 	Code string
 }
 
+// TagColors holds complete available tags list
 var TagColors = []TagColor{
 	{"red", "\033[38;5;203m"},
 	{"orange", "\033[38;5;208m"},
@@ -164,6 +168,7 @@ func (t *TagList) CreateTag(name, colourName string) {
 	t.Tags = append(t.Tags, newTag)
 }
 
+// GetTag is the selector of the tag by name
 func (t *TagList) GetTag(name string) (Tag, error) {
 	if name == "" {
 		return Tag{}, nil

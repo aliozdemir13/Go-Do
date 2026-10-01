@@ -22,7 +22,10 @@ var rootCmd = &cobra.Command{
 	Long:    `Go-Do is a CLI task manager that helps you manage your todos from the terminal.`,
 	Version: "1.0.1",
 	PersistentPreRunE: func(_ *cobra.Command, _ []string) error {
-		myTags.LoadFromFile(filenameTags)
+		eLoad := myTags.LoadFromFile(filenameTags)
+		if eLoad != nil {
+			return eLoad
+		}
 		return myList.LoadFromFile(filename)
 	},
 	RunE: func(cmd *cobra.Command, _ []string) error {
