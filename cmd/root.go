@@ -14,6 +14,7 @@ const filenameTags = "tags.json"
 
 var myList todo.TodoList
 var myTags todo.TagList
+var tag string
 
 var rootCmd = &cobra.Command{
 	Use:     "go-do",
@@ -39,7 +40,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		_, _ = fmt.Fprintln(cmd.OutOrStdout(), todo.StyledBar("OPEN TASKS "))
-		myList.Display(cmd.OutOrStdout(), false)
+		myList.Display(cmd.OutOrStdout(), false, "")
 		return nil
 	},
 }

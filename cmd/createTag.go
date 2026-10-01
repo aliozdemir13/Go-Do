@@ -40,7 +40,7 @@ var addTagCmd = &cobra.Command{
 			todo.StyledBar("OPEN TASKS "),
 		)
 
-		myList.Display(cmd.OutOrStdout(), false)
+		myList.Display(cmd.OutOrStdout(), false, "")
 
 		return nil
 	},

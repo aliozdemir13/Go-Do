@@ -9,8 +9,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var tag string
-
 var addCmd = &cobra.Command{
 	Use:   "add <title>",
 	Short: "Add a new task",
@@ -52,7 +50,7 @@ var addCmd = &cobra.Command{
 			todo.StyledBar("OPEN TASKS "),
 		)
 
-		myList.Display(cmd.OutOrStdout(), false)
+		myList.Display(cmd.OutOrStdout(), false, "")
 
 		return nil
 	},

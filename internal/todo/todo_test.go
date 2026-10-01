@@ -6,36 +6,97 @@ import (
 )
 
 func TestTodoList_Add(t *testing.T) {
+	tags := &TagList{}
+	tags.CreateTag("work", "blue")
+
 	l := &TodoList{}
-	l.Add("Test Task 1")
-	l.Add("Test Task 2")
+
+	err := l.Add("Test Task 1", "work", tags)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	err = l.Add("Test Task 2", "", tags)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 
 	if len(l.Tasks) != 2 {
 		t.Errorf("Expected 2 tasks, got %d", len(l.Tasks))
 	}
+
 	if l.LastID != 2 {
-		t.Errorf("Expected LastId to be 2, got %d", l.LastID)
+		t.Errorf("Expected LastID to be 2, got %d", l.LastID)
 	}
+
 	if l.Tasks[0].Title != "Test Task 1" {
-		t.Errorf("Expected first task title to be 'Test Task 1', got %s", l.Tasks[0].Title)
+		t.Errorf(
+			"Expected first task title to be 'Test Task 1', got %s",
+			l.Tasks[0].Title,
+		)
+	}
+
+	if l.Tasks[0].Tag.Name != "work" {
+		t.Errorf(
+			"Expected first task tag to be 'work', got %s",
+			l.Tasks[0].Tag.Name,
+		)
+	}
+
+	if l.Tasks[0].Tag.Colour != "\033[38;5;75m" {
+		t.Errorf(
+			"Expected work tag colour to be blue, got %q",
+			l.Tasks[0].Tag.Colour,
+		)
+	}
+
+	if l.Tasks[1].Tag.Name != "" {
+		t.Errorf(
+			"Expected second task to have no tag, got %q",
+			l.Tasks[1].Tag.Name,
+		)
+	}
+}
+
+func TestTodoList_Add_InvalidTag(t *testing.T) {
+	tags := &TagList{}
+	tags.CreateTag("work", "blue")
+
+	l := &TodoList{}
+
+	err := l.Add("Test Task", "does-not-exist", tags)
+	if err == nil {
+		t.Error("Expected error for non-existent tag, got nil")
+	}
+
+	if len(l.Tasks) != 0 {
+		t.Errorf("Expected task not to be added, got %d tasks", len(l.Tasks))
 	}
 }
 
 func TestTodoList_Complete(t *testing.T) {
+	tags := &TagList{}
+
 	l := &TodoList{}
-	l.Add("Task to complete")
+
+	err := l.Add("Task to complete", "", tags)
+	if err != nil {
+		t.Fatalf("Expected no error adding task, got %v", err)
+	}
+
 	id := TaskID(l.LastID)
 
 	// Success case
-	err := l.Complete(id)
+	err = l.Complete(id)
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
 	}
+
 	if !l.Tasks[0].IsDone {
 		t.Error("Expected task to be marked as done")
 	}
 
-	// Failure case (ID doesn't exist)
+	// Failure case
 	err = l.Complete(999)
 	if err == nil {
 		t.Error("Expected error for non-existent ID, got nil")
@@ -43,19 +104,32 @@ func TestTodoList_Complete(t *testing.T) {
 }
 
 func TestTodoList_Delete(t *testing.T) {
+	tags := &TagList{}
+
 	l := &TodoList{}
-	l.Add("Task 1")
-	l.Add("Task 2")
-	l.Add("Task 3")
+
+	if err := l.Add("Task 1", "", tags); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	if err := l.Add("Task 2", "", tags); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	if err := l.Add("Task 3", "", tags); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 
 	// Delete middle task (Task 2, ID 2)
 	err := l.Delete(2)
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
 	}
+
 	if len(l.Tasks) != 2 {
 		t.Errorf("Expected 2 tasks remaining, got %d", len(l.Tasks))
 	}
+
 	if l.Tasks[1].Title != "Task 3" {
 		t.Error("Task 3 should have shifted up to index 1")
 	}
@@ -68,50 +142,91 @@ func TestTodoList_Delete(t *testing.T) {
 }
 
 func TestTodoList_GetStats(t *testing.T) {
+	tags := &TagList{}
+
 	l := &TodoList{}
-	l.Add("T1")
-	l.Add("T2")
-	l.Add("T3")
-	l.Complete(1)
-	l.Complete(2)
+
+	if err := l.Add("T1", "", tags); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	if err := l.Add("T2", "", tags); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	if err := l.Add("T3", "", tags); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	if err := l.Complete(1); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	if err := l.Complete(2); err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
 
 	total, completed := l.GetStats()
+
 	if total != 3 {
 		t.Errorf("Expected total 3, got %d", total)
 	}
+
 	if completed != 2 {
 		t.Errorf("Expected completed 2, got %d", completed)
 	}
 }
 
 func TestTodoList_Display(t *testing.T) {
-	// We test all branches of the Display logic
-
 	t.Run("Empty List", func(t *testing.T) {
 		l := &TodoList{}
-		l.Display(io.Discard, false) // Should hit "No tasks yet!"
+
+		l.Display(io.Discard, false, "")
 	})
 
 	t.Run("No Completed Tasks Message", func(t *testing.T) {
+		tags := &TagList{}
 		l := &TodoList{}
-		l.Add("Pending")
-		l.Display(io.Discard, true) // isDone=true, but counter=0. Hits "Nothing to see here!"
+
+		if err := l.Add("Pending", "", tags); err != nil {
+			t.Fatalf("Expected no error, got %v", err)
+		}
+
+		l.Display(io.Discard, true, "")
 	})
 
 	t.Run("No Pending Tasks Message", func(t *testing.T) {
+		tags := &TagList{}
 		l := &TodoList{}
-		l.Add("Done")
-		l.Complete(1)
-		l.Display(io.Discard, false) // isDone=false, but counter=0. Hits "No tasks yet!"
+
+		if err := l.Add("Done", "", tags); err != nil {
+			t.Fatalf("Expected no error, got %v", err)
+		}
+
+		if err := l.Complete(1); err != nil {
+			t.Fatalf("Expected no error, got %v", err)
+		}
+
+		l.Display(io.Discard, false, "")
 	})
 
 	t.Run("Full Display", func(t *testing.T) {
+		tags := &TagList{}
 		l := &TodoList{}
-		l.Add("Task A")
-		l.Add("Task B")
-		l.Complete(1)
 
-		l.Display(io.Discard, true)  // Displays Task A
-		l.Display(io.Discard, false) // Displays Task B
+		if err := l.Add("Task A", "", tags); err != nil {
+			t.Fatalf("Expected no error, got %v", err)
+		}
+
+		if err := l.Add("Task B", "", tags); err != nil {
+			t.Fatalf("Expected no error, got %v", err)
+		}
+
+		if err := l.Complete(1); err != nil {
+			t.Fatalf("Expected no error, got %v", err)
+		}
+
+		l.Display(io.Discard, true, "")
+		l.Display(io.Discard, false, "")
 	})
 }

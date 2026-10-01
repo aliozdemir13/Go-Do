@@ -80,7 +80,7 @@ func (l *TodoList) Add(title string, tagName string, tagList *TagList) error {
 /* Once a struct becomes a "Manager" (like TodoList),
 we almost always use Pointer Receivers (*TodoList) for everything, even if it's just reading.
 It's more efficient and keeps the method set consistent. */
-func (l *TodoList) Display(w io.Writer, isDone bool) {
+func (l *TodoList) Display(w io.Writer, isDone bool, tag string) {
 	counter := 0
 	colour := ""
 
@@ -90,6 +90,10 @@ func (l *TodoList) Display(w io.Writer, isDone bool) {
 			status = "X"
 		}
 		if t.IsDone != isDone {
+			continue
+		}
+
+		if tag != "" && t.Tag.Name != tag {
 			continue
 		}
 
@@ -161,6 +165,10 @@ func (t *TagList) CreateTag(name, colourName string) {
 }
 
 func (t *TagList) GetTag(name string) (Tag, error) {
+	if name == "" {
+		return Tag{}, nil
+	}
+
 	for _, tag := range t.Tags {
 		if tag.Name == name {
 			return tag, nil

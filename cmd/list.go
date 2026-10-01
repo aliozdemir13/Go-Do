@@ -30,10 +30,10 @@ var listCmd = &cobra.Command{
 
 		if showDone {
 			_, _ = fmt.Fprintln(cmd.OutOrStdout(), todo.StyledBar("COMPLETED TASKS "))
-			myList.Display(cmd.OutOrStdout(), true)
+			myList.Display(cmd.OutOrStdout(), true, tag)
 		} else {
 			_, _ = fmt.Fprintln(cmd.OutOrStdout(), todo.StyledBar("OPEN TASKS "))
-			myList.Display(cmd.OutOrStdout(), false)
+			myList.Display(cmd.OutOrStdout(), false, tag)
 		}
 		return nil
 	},
@@ -41,4 +41,5 @@ var listCmd = &cobra.Command{
 
 func init() {
 	listCmd.Flags().BoolVar(&showDone, "done", false, "Show completed tasks")
+	listCmd.Flags().StringVarP(&tag, "tag", "t", "", "Filter based on tags")
 }
