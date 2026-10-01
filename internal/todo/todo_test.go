@@ -2,6 +2,7 @@ package todo
 
 import (
 	"io"
+	"strings"
 	"testing"
 )
 
@@ -228,5 +229,70 @@ func TestTodoList_Display(t *testing.T) {
 
 		l.Display(io.Discard, true, "")
 		l.Display(io.Discard, false, "")
+	})
+}
+
+func TestStyleTextWithTagName(t *testing.T) {
+	t.Run("Known tag color", func(t *testing.T) {
+		got := StyleTextWithTagName("blue", "work")
+		want := "\033[38;5;75mwork" + ColorReset
+
+		if got != want {
+			t.Errorf("Expected %q, got %q", want, got)
+		}
+	})
+
+	t.Run("Unknown tag color", func(t *testing.T) {
+		got := StyleTextWithTagName("does-not-exist", "work")
+		want := "work"
+
+		if got != want {
+			t.Errorf("Expected %q, got %q", want, got)
+		}
+	})
+}
+
+func TestPrintTags(t *testing.T) {
+	t.Run("Print tags", func(t *testing.T) {
+		tags := &TagList{}
+
+		tags.CreateTag("work", "blue")
+		tags.CreateTag("personal", "green")
+
+		var output strings.Builder
+
+		err := PrintTags(&output, tags)
+		if err != nil {
+			t.Fatalf("Expected no error, got %v", err)
+		}
+
+		got := output.String()
+
+		if !strings.Contains(got, "Tags:") {
+			t.Error("Expected output to contain Tags:")
+		}
+
+		if !strings.Contains(got, "work") {
+			t.Error("Expected output to contain work tag")
+		}
+
+		if !strings.Contains(got, "personal") {
+			t.Error("Expected output to contain personal tag")
+		}
+	})
+
+	t.Run("Empty tags", func(t *testing.T) {
+		tags := &TagList{}
+
+		var output strings.Builder
+
+		err := PrintTags(&output, tags)
+		if err != nil {
+			t.Fatalf("Expected no error, got %v", err)
+		}
+
+		if !strings.Contains(output.String(), "Tags:") {
+			t.Error("Expected output to contain Tags:")
+		}
 	})
 }
