@@ -1,13 +1,19 @@
-BINARY  := go-do
-COVER   := coverage.out
+BINARY := godo
+COVER  := coverage.out
 
-.PHONY: all build run test lint coverage clean tidy
+.PHONY: all build install run test lint coverage clean tidy
 
 all: tidy lint test build
 
-## build: compile the binary
+## build: compile the binary locally
 build:
 	go build -o $(BINARY) .
+
+## install: install the CLI into Go's user binary directory
+install:
+	@GOBIN="$$(go env GOPATH)/bin"; \
+	mkdir -p "$$GOBIN"; \
+	go build -o "$$GOBIN/$(BINARY)" .
 
 ## run: run without producing a binary
 run:
@@ -17,17 +23,20 @@ run:
 test:
 	go test -v ./...
 
-## coverage: run tests and show coverage report (fails below 90%)
+## coverage: run tests and show coverage report
 coverage:
 	go test -coverprofile=$(COVER) ./...
 	go tool cover -func=$(COVER)
 	@THRESHOLD=90; \
-	COVERAGE=$$(go tool cover -func=$(COVER) | grep total | awk '{print $$3}' | sed 's/%//'); \
-	echo "Coverage: $$COVERAGE%  (threshold: $$THRESHOLD%)"; \
-	VALID=$$(echo "$$COVERAGE >= $$THRESHOLD" | bc -l); \
-	if [ "$$VALID" -eq 0 ]; then \
-		echo "Error: coverage below $$THRESHOLD%"; exit 1; \
-	fi
+	COVERAGE=$$(go tool cover -func=$(COVER) | \
+		awk '/^total:/ {gsub("%","",$$3); print $$3}'); \
+	awk -v coverage="$$COVERAGE" -v threshold="$$THRESHOLD" 'BEGIN { \
+		printf "Coverage: %.1f%% (threshold: %d%%)\n", coverage, threshold; \
+		if (coverage < threshold) { \
+			print "Error: coverage below threshold"; \
+			exit 1; \
+		} \
+	}'
 
 ## lint: run golangci-lint
 lint:

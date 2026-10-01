@@ -26,7 +26,7 @@ var completeCmd = &cobra.Command{
 		}
 		_, _ = fmt.Fprintln(cmd.OutOrStdout(), todo.Indigo("\n Task completed!"))
 		_, _ = fmt.Fprintln(cmd.OutOrStdout(), todo.StyledBar("OPEN TASKS "))
-		myList.Display(cmd.OutOrStdout(), false)
+		myList.Display(cmd.OutOrStdout(), false, "")
 		return nil
 	},
 }

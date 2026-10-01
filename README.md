@@ -119,6 +119,11 @@ I implemented `bufio.Scanner` for handling multi-word task titles and `strconv.A
         └── style_test.go
 ```
 
+### TODO
+- [X] Tags addition to categorize tasks
+- [ ] Tags based filtering
+- [ ] Allow task without tags
+
 ### License
 
 Distributed under the MIT License. See LICENSE for more information.

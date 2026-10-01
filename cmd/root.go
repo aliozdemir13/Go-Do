@@ -10,15 +10,22 @@ import (
 )
 
 const filename = "tasks.json"
+const filenameTags = "tags.json"
 
 var myList todo.TodoList
+var myTags todo.TagList
+var tag string
 
 var rootCmd = &cobra.Command{
 	Use:     "go-do",
 	Short:   "A terminal-based task manager",
 	Long:    `Go-Do is a CLI task manager that helps you manage your todos from the terminal.`,
-	Version: "1.0.0",
+	Version: "1.0.1",
 	PersistentPreRunE: func(_ *cobra.Command, _ []string) error {
+		eLoad := myTags.LoadFromFile(filenameTags)
+		if eLoad != nil {
+			return eLoad
+		}
 		return myList.LoadFromFile(filename)
 	},
 	RunE: func(cmd *cobra.Command, _ []string) error {
@@ -30,8 +37,13 @@ var rootCmd = &cobra.Command{
 		if e != nil {
 			return e
 		}
+
+		if err := todo.PrintTags(cmd.OutOrStdout(), &myTags); err != nil {
+			return err
+		}
+
 		_, _ = fmt.Fprintln(cmd.OutOrStdout(), todo.StyledBar("OPEN TASKS "))
-		myList.Display(cmd.OutOrStdout(), false)
+		myList.Display(cmd.OutOrStdout(), false, "")
 		return nil
 	},
 }
@@ -46,4 +58,5 @@ func init() {
 	rootCmd.AddCommand(completeCmd)
 	rootCmd.AddCommand(deleteCmd)
 	rootCmd.AddCommand(listCmd)
+	rootCmd.AddCommand(addTagCmd)
 }

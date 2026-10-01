@@ -122,3 +122,36 @@ func PrintProgress(w io.Writer, list *TodoList) error {
 	_, err := fmt.Fprint(w, b.String())
 	return err
 }
+
+// StyleTextWithTagName dynamic method for styling lines per tag color
+func StyleTextWithTagName(tagColor, text string) string {
+	for _, t := range TagColors {
+		if t.Name == tagColor {
+			return t.Code + text + ColorReset
+		}
+	}
+
+	return text
+}
+
+// PrintTags constructs and prints the list of created tags
+func PrintTags(w io.Writer, list *TagList) error {
+	var b strings.Builder
+
+	fmt.Fprintf(&b, "\n   %s  \n", StyledBar("Tags:"))
+
+	for _, t := range list.Tags {
+		fmt.Fprintf(
+			&b,
+			"   %s%s%s",
+			t.Colour,
+			t.Name,
+			ColorReset,
+		)
+	}
+
+	b.WriteString("\n\n")
+
+	_, err := fmt.Fprint(w, b.String())
+	return err
+}
